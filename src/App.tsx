@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flame, Target, Sparkles, Brain, ArrowRight, ChevronRight, Users, Star, Quote } from 'lucide-react';
+import { Flame, Target, Sparkles, Brain, ArrowRight, ChevronRight, Users, Star, Quote, Headphones, Play } from 'lucide-react';
 
 function App() {
   return (
@@ -138,66 +138,389 @@ function App() {
         </section>
 
         {/* Personas Section */}
-        <section className="container mx-auto px-6 py-20">
+        <section className="container mx-auto px-6 py-24 bg-gray-900/50 rounded-3xl my-12">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-6">Your Goals, Your Journey, Your Victory</h2>
+            <h2 className="text-5xl font-bold mb-6">Tailored for <span className="text-orange-500">Your</span> Journey</h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Whether you're climbing corporate ladders or breaking athletic records, PowerTalk adapts 
-              to your unique path, providing the fuel you need to reach new heights.
+              Different goals demand different motivation. PowerTalk analyzes your unique situation
+              and delivers precisely calibrated pep talks that resonate with <span className="italic">your</span> specific challenges.
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="bg-gray-800/50 p-8 rounded-2xl border border-gray-700 hover:border-orange-500 transition-all">
-              <div className="flex items-center gap-3 mb-4">
-                <Users className="w-6 h-6 text-orange-500" />
-                <h3 className="text-xl font-bold">Unstoppable Entrepreneurs</h3>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+            {/* Entrepreneur Persona */}
+            <div className="bg-gradient-to-b from-gray-800 to-gray-900 p-10 rounded-3xl border border-gray-700 hover:border-orange-500 transition-all group relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full -mr-16 -mt-16 group-hover:bg-orange-500/20 transition-all duration-500"></div>
+              
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-16 h-16 bg-orange-500/20 rounded-full flex items-center justify-center">
+                  <Users className="w-8 h-8 text-orange-500" />
+                </div>
+                <h3 className="text-2xl font-bold">Ambitious Entrepreneurs</h3>
               </div>
-              <p className="text-gray-300 mb-4">
-                "When doubt creeps in during those late nights, PowerTalk reminds me why I started. 
-                It's the partner that keeps me pushing forward, no matter what."
-              </p>
-              <div className="flex items-center gap-1 text-orange-500">
-                <Star className="w-4 h-4 fill-current" />
-                <Star className="w-4 h-4 fill-current" />
-                <Star className="w-4 h-4 fill-current" />
-                <Star className="w-4 h-4 fill-current" />
-                <Star className="w-4 h-4 fill-current" />
+              
+              <div className="mb-6 pb-6 border-b border-gray-700">
+                <p className="text-gray-300 mb-4 text-lg">
+                  <span className="text-orange-400 font-semibold">Their challenges:</span> Investor pressure, 
+                  market uncertainty, team management, work-life balance
+                </p>
+                <p className="text-gray-300 text-lg">
+                  <span className="text-orange-400 font-semibold">Their needs:</span> Resilience building, 
+                  strategic clarity, confidence in decision-making
+                </p>
               </div>
-            </div>
-            <div className="bg-gray-800/50 p-8 rounded-2xl border border-gray-700 hover:border-orange-500 transition-all">
-              <div className="flex items-center gap-3 mb-4">
-                <Users className="w-6 h-6 text-orange-500" />
-                <h3 className="text-xl font-bold">Elite Athletes</h3>
+              
+              <div className="bg-gray-800/50 p-6 rounded-2xl mb-6">
+                <p className="italic text-gray-300 relative">
+                  <span className="text-4xl text-orange-500/20 absolute -top-3 -left-2">"</span>
+                  When doubt creeps in during those late nights, PowerTalk reminds me why I started. 
+                  The messages feel like they were written specifically for my entrepreneurial journey.
+                  <span className="text-4xl text-orange-500/20 absolute -bottom-6 -right-2">"</span>
+                </p>
               </div>
-              <p className="text-gray-300 mb-4">
-                "PowerTalk is my secret weapon. When my body says stop, these personalized messages 
-                remind me I've got another gear. Every. Single. Time."
-              </p>
-              <div className="flex items-center gap-1 text-orange-500">
-                <Star className="w-4 h-4 fill-current" />
-                <Star className="w-4 h-4 fill-current" />
-                <Star className="w-4 h-4 fill-current" />
-                <Star className="w-4 h-4 fill-current" />
-                <Star className="w-4 h-4 fill-current" />
-              </div>
-            </div>
-            <div className="bg-gray-800/50 p-8 rounded-2xl border border-gray-700 hover:border-orange-500 transition-all">
-              <div className="flex items-center gap-3 mb-4">
-                <Users className="w-6 h-6 text-orange-500" />
-                <h3 className="text-xl font-bold">Driven Students</h3>
-              </div>
-              <p className="text-gray-300 mb-4">
-                "From pulling all-nighters to acing finals, PowerTalk keeps me focused on my goals. 
-                It's like having a personal success coach in my pocket."
-              </p>
-              <div className="flex items-center gap-1 text-orange-500">
-                <Star className="w-4 h-4 fill-current" />
-                <Star className="w-4 h-4 fill-current" />
-                <Star className="w-4 h-4 fill-current" />
-                <Star className="w-4 h-4 fill-current" />
-                <Star className="w-4 h-4 fill-current" />
+              
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1 text-orange-500">
+                  <Star className="w-5 h-5 fill-current" />
+                  <Star className="w-5 h-5 fill-current" />
+                  <Star className="w-5 h-5 fill-current" />
+                  <Star className="w-5 h-5 fill-current" />
+                  <Star className="w-5 h-5 fill-current" />
+                </div>
+                <p className="text-gray-400 text-sm">Sarah J., Founder</p>
               </div>
             </div>
+            
+            {/* Athlete Persona */}
+            <div className="bg-gradient-to-b from-gray-800 to-gray-900 p-10 rounded-3xl border border-gray-700 hover:border-orange-500 transition-all group relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full -mr-16 -mt-16 group-hover:bg-orange-500/20 transition-all duration-500"></div>
+              
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-16 h-16 bg-orange-500/20 rounded-full flex items-center justify-center">
+                  <Target className="w-8 h-8 text-orange-500" />
+                </div>
+                <h3 className="text-2xl font-bold">Elite Athletes</h3>
+              </div>
+              
+              <div className="mb-6 pb-6 border-b border-gray-700">
+                <p className="text-gray-300 mb-4 text-lg">
+                  <span className="text-orange-400 font-semibold">Their challenges:</span> Physical plateaus, 
+                  competitive pressure, recovery setbacks, mental blocks
+                </p>
+                <p className="text-gray-300 text-lg">
+                  <span className="text-orange-400 font-semibold">Their needs:</span> Performance psychology, 
+                  pain tolerance, disciplined consistency
+                </p>
+              </div>
+              
+              <div className="bg-gray-800/50 p-6 rounded-2xl mb-6">
+                <p className="italic text-gray-300 relative">
+                  <span className="text-4xl text-orange-500/20 absolute -top-3 -left-2">"</span>
+                  PowerTalk is my secret weapon. When my body says stop, these personalized messages 
+                  speak directly to my athlete mindset. It's like having a coach who knows exactly what I need to hear.
+                  <span className="text-4xl text-orange-500/20 absolute -bottom-6 -right-2">"</span>
+                </p>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1 text-orange-500">
+                  <Star className="w-5 h-5 fill-current" />
+                  <Star className="w-5 h-5 fill-current" />
+                  <Star className="w-5 h-5 fill-current" />
+                  <Star className="w-5 h-5 fill-current" />
+                  <Star className="w-5 h-5 fill-current" />
+                </div>
+                <p className="text-gray-400 text-sm">Marcus L., Pro Runner</p>
+              </div>
+            </div>
+            
+            {/* Student Persona */}
+            <div className="bg-gradient-to-b from-gray-800 to-gray-900 p-10 rounded-3xl border border-gray-700 hover:border-orange-500 transition-all group relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full -mr-16 -mt-16 group-hover:bg-orange-500/20 transition-all duration-500"></div>
+              
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-16 h-16 bg-orange-500/20 rounded-full flex items-center justify-center">
+                  <Brain className="w-8 h-8 text-orange-500" />
+                </div>
+                <h3 className="text-2xl font-bold">Ambitious Students</h3>
+              </div>
+              
+              <div className="mb-6 pb-6 border-b border-gray-700">
+                <p className="text-gray-300 mb-4 text-lg">
+                  <span className="text-orange-400 font-semibold">Their challenges:</span> Exam pressure, 
+                  information overload, competing priorities, academic burnout
+                </p>
+                <p className="text-gray-300 text-lg">
+                  <span className="text-orange-400 font-semibold">Their needs:</span> Focus techniques, 
+                  effective study strategies, stress management
+                </p>
+              </div>
+              
+              <div className="bg-gray-800/50 p-6 rounded-2xl mb-6">
+                <p className="italic text-gray-300 relative">
+                  <span className="text-4xl text-orange-500/20 absolute -top-3 -left-2">"</span>
+                  From pulling all-nighters to acing finals, PowerTalk delivers motivation that understands 
+                  student life. It's like it knows exactly what obstacles I'm facing in my academic journey.
+                  <span className="text-4xl text-orange-500/20 absolute -bottom-6 -right-2">"</span>
+                </p>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1 text-orange-500">
+                  <Star className="w-5 h-5 fill-current" />
+                  <Star className="w-5 h-5 fill-current" />
+                  <Star className="w-5 h-5 fill-current" />
+                  <Star className="w-5 h-5 fill-current" />
+                  <Star className="w-5 h-5 fill-current" />
+                </div>
+                <p className="text-gray-400 text-sm">Emma R., Med Student</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="mt-16 text-center">
+            <p className="text-2xl font-bold mb-8">Your unique journey deserves motivation that speaks your language</p>
+            <button className="bg-orange-500 hover:bg-orange-600 px-8 py-4 rounded-full font-semibold text-lg transition-all flex items-center gap-2 mx-auto">
+              Find Your Perfect Motivation Match <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+        </section>
+
+        {/* Showcase Section - Examples of What's Possible */}
+        <section className="container mx-auto px-6 py-24">
+          <div className="text-center mb-16">
+            <h2 className="text-5xl font-bold mb-6">See PowerTalk <span className="text-orange-500">In Action</span></h2>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+              Experience how PowerTalk delivers exactly what you need, when you need it.
+              Here are real examples of how our personalized pep talks transform challenges into victories.
+            </p>
+          </div>
+          
+          <div className="space-y-16">
+            {/* Example 1: Maintaining Discipline */}
+            <div className="bg-gray-900/50 rounded-3xl p-8 md:p-12">
+              <div className="grid md:grid-cols-2 gap-10 items-center">
+                <div>
+                  <div className="inline-block bg-orange-500/20 rounded-full px-4 py-2 mb-6">
+                    <p className="text-orange-400 font-semibold">Goal: Maintaining Discipline</p>
+                  </div>
+                  <h3 className="text-3xl font-bold mb-6">When Motivation Fades, Discipline Prevails</h3>
+                  <p className="text-gray-300 text-lg mb-8">
+                    We all face those moments when initial excitement wanes and the daily grind feels overwhelming. 
+                    PowerTalk's discipline-focused pep talks help you push through these valleys by:
+                  </p>
+                  <ul className="space-y-4">
+                    <li className="flex items-start">
+                      <div className="bg-orange-500/20 rounded-full p-1 mt-1 mr-3">
+                        <ChevronRight className="w-4 h-4 text-orange-500" />
+                      </div>
+                      <p className="text-gray-300">Reminding you of your deeper purpose beyond momentary discomfort</p>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="bg-orange-500/20 rounded-full p-1 mt-1 mr-3">
+                        <ChevronRight className="w-4 h-4 text-orange-500" />
+                      </div>
+                      <p className="text-gray-300">Reinforcing the compound effect of consistent daily actions</p>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="bg-orange-500/20 rounded-full p-1 mt-1 mr-3">
+                        <ChevronRight className="w-4 h-4 text-orange-500" />
+                      </div>
+                      <p className="text-gray-300">Celebrating small wins to maintain momentum</p>
+                    </li>
+                  </ul>
+                </div>
+                
+                <div className="bg-gray-800 rounded-2xl p-8 border-l-4 border-orange-500 relative">
+                  <div className="absolute -top-4 -left-4 bg-gray-900 rounded-full p-3 border-4 border-gray-800">
+                    <Headphones className="w-6 h-6 text-orange-500" />
+                  </div>
+                  
+                  <div className="mb-6">
+                    <h4 className="text-xl font-bold text-white mb-2">Listen to a Discipline Booster</h4>
+                    <p className="text-gray-300">
+                      Hear how PowerTalk delivers motivation when discipline is fading
+                    </p>
+                  </div>
+                  
+                  <div className="bg-gray-900/50 rounded-xl p-4 flex items-center">
+                    <button className="bg-orange-500 hover:bg-orange-600 rounded-full p-3 mr-4 transition-all flex-shrink-0">
+                      <Play className="w-6 h-6" />
+                    </button>
+                    
+                    <div className="w-full">
+                      <div className="flex justify-between mb-1">
+                        <span className="text-sm text-gray-400">Discipline Booster</span>
+                        <span className="text-sm text-gray-400">1:45</span>
+                      </div>
+                      <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+                        <div className="h-full bg-orange-500 rounded-full" style={{ width: '30%' }}></div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-4 text-center">
+                    <audio id="discipline-audio" className="hidden">
+                      <source src="sample.mp3" type="audio/mpeg" />
+                      Your browser does not support the audio element.
+                    </audio>
+                    <p className="text-sm text-gray-400">Tap play to listen to this pep talk</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Example 2: Regaining Focus */}
+            <div className="bg-gray-900/50 rounded-3xl p-8 md:p-12">
+              <div className="grid md:grid-cols-2 gap-10 items-center md:flex-row-reverse">
+                <div className="md:order-2">
+                  <div className="inline-block bg-orange-500/20 rounded-full px-4 py-2 mb-6">
+                    <p className="text-orange-400 font-semibold">Goal: Regaining Focus</p>
+                  </div>
+                  <h3 className="text-3xl font-bold mb-6">Cut Through the Mental Noise</h3>
+                  <p className="text-gray-300 text-lg mb-8">
+                    In a world of endless distractions, maintaining focus is harder than ever. 
+                    PowerTalk's focus-enhancing messages help you recenter by:
+                  </p>
+                  <ul className="space-y-4">
+                    <li className="flex items-start">
+                      <div className="bg-orange-500/20 rounded-full p-1 mt-1 mr-3">
+                        <ChevronRight className="w-4 h-4 text-orange-500" />
+                      </div>
+                      <p className="text-gray-300">Guiding you through quick mental reset techniques</p>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="bg-orange-500/20 rounded-full p-1 mt-1 mr-3">
+                        <ChevronRight className="w-4 h-4 text-orange-500" />
+                      </div>
+                      <p className="text-gray-300">Helping prioritize tasks when everything feels urgent</p>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="bg-orange-500/20 rounded-full p-1 mt-1 mr-3">
+                        <ChevronRight className="w-4 h-4 text-orange-500" />
+                      </div>
+                      <p className="text-gray-300">Creating mental space for deep work and flow states</p>
+                    </li>
+                  </ul>
+                </div>
+                
+                <div className="bg-gray-800 rounded-2xl p-8 border-l-4 border-orange-500 relative md:order-1">
+                  <div className="absolute -top-4 -left-4 bg-gray-900 rounded-full p-3 border-4 border-gray-800">
+                    <Headphones className="w-6 h-6 text-orange-500" />
+                  </div>
+                  
+                  <div className="mb-6">
+                    <h4 className="text-xl font-bold text-white mb-2">Listen to a Focus Restorer</h4>
+                    <p className="text-gray-300">
+                      Hear how PowerTalk helps you regain focus when distracted
+                    </p>
+                  </div>
+                  
+                  <div className="bg-gray-900/50 rounded-xl p-4 flex items-center">
+                    <button className="bg-orange-500 hover:bg-orange-600 rounded-full p-3 mr-4 transition-all flex-shrink-0">
+                      <Play className="w-6 h-6" />
+                    </button>
+                    
+                    <div className="w-full">
+                      <div className="flex justify-between mb-1">
+                        <span className="text-sm text-gray-400">Focus Restorer</span>
+                        <span className="text-sm text-gray-400">2:10</span>
+                      </div>
+                      <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+                        <div className="h-full bg-orange-500 rounded-full" style={{ width: '45%' }}></div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-4 text-center">
+                    <audio id="focus-audio" className="hidden">
+                      <source src="sample.mp3" type="audio/mpeg" />
+                      Your browser does not support the audio element.
+                    </audio>
+                    <p className="text-sm text-gray-400">Tap play to listen to this pep talk</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Example 3: Getting Back on Track */}
+            <div className="bg-gray-900/50 rounded-3xl p-8 md:p-12">
+              <div className="grid md:grid-cols-2 gap-10 items-center">
+                <div>
+                  <div className="inline-block bg-orange-500/20 rounded-full px-4 py-2 mb-6">
+                    <p className="text-orange-400 font-semibold">Goal: Getting Back on Track</p>
+                  </div>
+                  <h3 className="text-3xl font-bold mb-6">Recover From Setbacks Stronger Than Before</h3>
+                  <p className="text-gray-300 text-lg mb-8">
+                    We all fall off track sometimes. What matters is how quickly you recover. 
+                    PowerTalk's recovery-focused messages help you bounce back by:
+                  </p>
+                  <ul className="space-y-4">
+                    <li className="flex items-start">
+                      <div className="bg-orange-500/20 rounded-full p-1 mt-1 mr-3">
+                        <ChevronRight className="w-4 h-4 text-orange-500" />
+                      </div>
+                      <p className="text-gray-300">Reframing setbacks as valuable learning opportunities</p>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="bg-orange-500/20 rounded-full p-1 mt-1 mr-3">
+                        <ChevronRight className="w-4 h-4 text-orange-500" />
+                      </div>
+                      <p className="text-gray-300">Creating simple re-entry points to restart your momentum</p>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="bg-orange-500/20 rounded-full p-1 mt-1 mr-3">
+                        <ChevronRight className="w-4 h-4 text-orange-500" />
+                      </div>
+                      <p className="text-gray-300">Building resilience through compassionate self-talk</p>
+                    </li>
+                  </ul>
+                </div>
+                
+                <div className="bg-gray-800 rounded-2xl p-8 border-l-4 border-orange-500 relative">
+                  <div className="absolute -top-4 -left-4 bg-gray-900 rounded-full p-3 border-4 border-gray-800">
+                    <Headphones className="w-6 h-6 text-orange-500" />
+                  </div>
+                  
+                  <div className="mb-6">
+                    <h4 className="text-xl font-bold text-white mb-2">Listen to a Reset Button</h4>
+                    <p className="text-gray-300">
+                      Hear how PowerTalk helps you get back on track after setbacks
+                    </p>
+                  </div>
+                  
+                  <div className="bg-gray-900/50 rounded-xl p-4 flex items-center">
+                    <button className="bg-orange-500 hover:bg-orange-600 rounded-full p-3 mr-4 transition-all flex-shrink-0">
+                      <Play className="w-6 h-6" />
+                    </button>
+                    
+                    <div className="w-full">
+                      <div className="flex justify-between mb-1">
+                        <span className="text-sm text-gray-400">Reset Button</span>
+                        <span className="text-sm text-gray-400">1:58</span>
+                      </div>
+                      <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+                        <div className="h-full bg-orange-500 rounded-full" style={{ width: '60%' }}></div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-4 text-center">
+                    <audio id="reset-audio" className="hidden">
+                      <source src="sample.mp3" type="audio/mpeg" />
+                      Your browser does not support the audio element.
+                    </audio>
+                    <p className="text-sm text-gray-400">Tap play to listen to this pep talk</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="mt-16 text-center">
+            <button className="bg-orange-500 hover:bg-orange-600 px-8 py-4 rounded-full font-semibold text-lg transition-all flex items-center gap-2 mx-auto">
+              Experience Personalized Motivation <ArrowRight className="w-5 h-5" />
+            </button>
           </div>
         </section>
 
