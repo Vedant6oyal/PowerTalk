@@ -1,7 +1,29 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Flame, Target, Sparkles, Brain, ArrowRight, ChevronRight, Users, Star, Quote, Headphones, Play } from 'lucide-react';
 
 function App() {
+  // State for dynamic goals text
+  const [currentGoalIndex, setCurrentGoalIndex] = useState(0);
+  const goals = [
+    "Ace my exams",
+    "Achieve my dream body",
+    "Erase my self doubt",
+    "Retire my parents",
+    "Build my business",
+    "Overcome my fears",
+    "Boost my confidence",
+    "Reach my full potential"
+  ];
+
+  // Effect to rotate through goals every second
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentGoalIndex((prevIndex) => (prevIndex + 1) % goals.length);
+    }, 1000);
+    
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
       {/* Hero Section */}
@@ -24,11 +46,28 @@ function App() {
           </h1>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-10">
           With PowerTalk, you'll receive personalized motivational pep talks crafted specifically for you and your goals.
-          It’s time to supercharge your productivity, silence procrastination, and finally turn your dreams into reality.
+          It's time to supercharge your productivity, silence procrastination, and finally turn your dreams into reality.
           </p>
           <button className="bg-orange-500 hover:bg-orange-600 px-8 py-4 rounded-full font-semibold text-lg transition-all flex items-center gap-2 mx-auto">
             Unlock Your Potential Today <ArrowRight className="w-5 h-5" />
           </button>
+        </section>
+
+        {/* Dynamic Goals Section */}
+        <section className="container mx-auto px-6 py-16 text-center bg-gray-900/50">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-4xl md:text-6xl font-bold mb-10 flex flex-wrap justify-center items-center">
+              <span className="mr-3">I want to</span>
+              <span className="text-orange-500 inline-block min-w-[300px] h-[80px] md:h-[100px] relative overflow-visible">
+                <span className="absolute left-0 right-0 transition-all duration-500 transform">
+                  {goals[currentGoalIndex]}
+                </span>
+              </span>
+            </h2>
+            <p className="text-xl text-gray-300 mb-8 mt-12">
+              Whatever your goal, PowerTalk delivers the personalized motivation you need to achieve it.
+            </p>
+          </div>
         </section>
 
         {/* Benefits Section */}
