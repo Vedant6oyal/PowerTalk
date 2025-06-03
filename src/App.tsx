@@ -11,21 +11,24 @@ import {
   Quote,
   Headphones,
   Play,
+  X,
 } from "lucide-react";
+import OnboardingQuiz from "./OnboardingQuiz";
 
 function App() {
   // State for dynamic goals text
   const [currentGoalIndex, setCurrentGoalIndex] = useState(0);
   const [animationClass, setAnimationClass] = useState('');
+  const [showQuiz, setShowQuiz] = useState(false);
   const goals = [
-    "ace my exams",
-    "achieve my dream body",
-    "erase my self-doubt",
-    "retire my parents",
-    "start my own business",
-    "master new skills",
-    "overcome my fears",
-    "build lasting confidence"
+    "Ace My Exams",
+    "Achieve My Dream Body",
+    "Erase My Self-Doubt",
+    "Retire My Parents",
+    "Start My Own Business",
+    "Master New Skills",
+    "Overcome My Fears",
+    "Build Lasting Confidence"
   ];
 
   // Effect to rotate through goals with slide animation
@@ -51,6 +54,36 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
+  // Handle opening the quiz
+  const handleOpenQuiz = () => {
+    setShowQuiz(true);
+    // Prevent scrolling when quiz is open
+    document.body.style.overflow = 'hidden';
+  };
+
+  // Handle closing the quiz
+  const handleCloseQuiz = () => {
+    setShowQuiz(false);
+    // Re-enable scrolling
+    document.body.style.overflow = 'auto';
+  };
+
+  // If quiz is showing, render it as a modal overlay
+  if (showQuiz) {
+    return (
+      <div className="relative">
+        <button 
+          onClick={handleCloseQuiz}
+          className="fixed top-6 right-6 z-50 bg-gray-800 hover:bg-gray-700 p-2 rounded-full transition-all"
+          aria-label="Close quiz"
+        >
+          <X className="w-6 h-6 text-white" />
+        </button>
+        <OnboardingQuiz />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
       {/* Hero Section */}
@@ -59,7 +92,10 @@ function App() {
           <Flame className="w-8 h-8 text-orange-500" />
           <span className="text-2xl font-bold">PowerTalk</span>
         </div>
-        <button className="bg-orange-500 hover:bg-orange-600 px-6 py-2 rounded-full font-semibold transition-all">
+        <button 
+          onClick={handleOpenQuiz}
+          className="bg-orange-500 hover:bg-orange-600 px-6 py-2 rounded-full font-semibold transition-all"
+        >
           Ignite Your Journey
         </button>
       </nav>
@@ -77,7 +113,10 @@ function App() {
             supercharge your productivity, silence procrastination, and finally
             turn your dreams into reality.
           </p>
-          <button className="bg-orange-500 hover:bg-orange-600 px-8 py-4 rounded-full font-semibold text-lg transition-all flex items-center gap-2 mx-auto">
+          <button 
+            onClick={handleOpenQuiz}
+            className="bg-orange-500 hover:bg-orange-600 px-8 py-4 rounded-full font-semibold text-lg transition-all flex items-center gap-2 mx-auto"
+          >
             Unlock Your Potential Today <ArrowRight className="w-5 h-5" />
           </button>
         </section>
@@ -91,7 +130,7 @@ function App() {
           
           <div className="max-w-4xl mx-auto relative z-10">
             <h2 className="text-4xl md:text-6xl font-bold mb-10 flex flex-col md:flex-row items-center justify-center">
-              <span className="bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent md:mr-3">I want to </span>
+              <span className="bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent md:mr-3">I Want To </span>
               <span className="dynamic-text w-full md:min-w-[300px] lg:min-w-[400px] text-center md:text-left relative overflow-hidden mt-2 md:mt-0">
                 <span className={`${animationClass === 'slide-in' ? 'animate-slideIn' : animationClass === 'slide-out' ? 'animate-slideOut' : ''} inline-block`}>
                   {goals[currentGoalIndex]}
@@ -99,8 +138,9 @@ function App() {
               </span>
             </h2>
             <p className="text-xl text-gray-300 mb-8 mt-8 md:mt-12 max-w-2xl mx-auto px-4">
-              Whatever your ambition, PowerTalk provides the motivation, strategies, and community support to turn your dreams into reality. Join thousands who have already transformed their lives.
-            </p>
+            No matter your ambition, PowerTalk fuels your journey.
+Get powerful motivational speeches and personalized pep talks tailored to your goals—designed to ignite action and keep you going.
+Join thousands who’ve already transformed their lives with PowerTalk. Your breakthrough starts now.            </p>
           </div>
         </section>
 
@@ -210,7 +250,10 @@ function App() {
           </div>
 
           <div className="mt-16 text-center">
-            <button className="bg-orange-500 hover:bg-orange-600 px-10 py-5 rounded-full font-semibold text-xl transition-all flex items-center gap-3 mx-auto">
+            <button 
+              onClick={handleOpenQuiz}
+              className="bg-orange-500 hover:bg-orange-600 px-10 py-5 rounded-full font-semibold text-xl transition-all flex items-center gap-3 mx-auto"
+            >
               Transform Your Life Today <ArrowRight className="w-6 h-6" />
             </button>
           </div>
@@ -516,7 +559,10 @@ function App() {
           </div>
 
           <div className="mt-16 text-center">
-            <button className="bg-orange-500 hover:bg-orange-600 px-8 py-4 rounded-full font-semibold text-lg transition-all flex items-center gap-2 mx-auto">
+            <button 
+              onClick={handleOpenQuiz}
+              className="bg-orange-500 hover:bg-orange-600 px-8 py-4 rounded-full font-semibold text-lg transition-all flex items-center gap-2 mx-auto"
+            >
               Experience Personalized Motivation{" "}
               <ArrowRight className="w-5 h-5" />
             </button>
@@ -623,22 +669,125 @@ function App() {
           </div>
         </section>
 
-        {/* Why PowerTalk Works Section */}
+        {/* Transformation Section */}
         <section className="container mx-auto px-6 py-20">
-          <div className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-3xl p-12 text-center">
-            <h2 className="text-4xl font-bold mb-8">
-              The Science of Unstoppable Success
-            </h2>
-            <p className="text-xl mb-8 max-w-3xl mx-auto">
-              "Your potential is limitless - but sometimes you need that extra
-              push to realize it. PowerTalk's AI understands your unique
-              journey, delivering powerful, personalized motivation that ignites
-              your inner fire and propels you toward your dreams. This isn't
-              just motivation - it's your personal catalyst for greatness."
+          <div className="text-center mb-16">
+            <h2 className="text-5xl font-bold mb-6">Your Transformation Journey</h2>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+              See how PowerTalk transforms your mindset and unlocks your true potential
             </p>
-            <button className="bg-black hover:bg-gray-900 px-8 py-3 rounded-full font-semibold flex items-center gap-2 mx-auto">
-              Begin Your Transformation <ChevronRight className="w-5 h-5" />
-            </button>
+          </div>
+
+          <div className="max-w-6xl mx-auto">
+            <div className="grid md:grid-cols-3 gap-8 items-center">
+              {/* Before State */}
+              <div className="bg-gradient-to-br from-red-900/20 to-gray-800/40 rounded-2xl border border-red-500/20 overflow-hidden">
+                <div className="relative">
+                  <img 
+                    src="https://images.pexels.com/photos/7516363/pexels-photo-7516363.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" 
+                    alt="Person struggling with procrastination" 
+                    className="w-full h-64 object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
+                  <h3 className="absolute bottom-4 left-0 right-0 text-2xl font-bold text-red-300 text-center">Before PowerTalk</h3>
+                </div>
+                <div className="p-6">
+                  <ul className="space-y-3 text-gray-300">
+                    <li className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-red-500 rounded-full flex-shrink-0"></div>
+                      <span>Procrastinating on important goals</span>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-red-500 rounded-full flex-shrink-0"></div>
+                      <span>Filled with self-doubt</span>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-red-500 rounded-full flex-shrink-0"></div>
+                      <span>Lacking motivation</span>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-red-500 rounded-full flex-shrink-0"></div>
+                      <span>Struggling with focus</span>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-red-500 rounded-full flex-shrink-0"></div>
+                      <span>Dreams feel impossible</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* PowerTalk Magic */}
+              <div className="text-center p-8 relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-orange-600/20 rounded-2xl blur-xl"></div>
+                <div className="relative z-10">
+                  <div className="w-20 h-20 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <Flame className="w-10 h-10 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent">PowerTalk Magic</h3>
+                  <div className="text-6xl mb-4">✨</div>
+                  <p className="text-gray-300 font-semibold">
+                    Personalized motivation that ignites your inner fire
+                  </p>
+                  <div className="flex items-center justify-center gap-4 mt-6">
+                    <ArrowRight className="w-6 h-6 text-orange-500" />
+                    <ArrowRight className="w-6 h-6 text-orange-500" />
+                    <ArrowRight className="w-6 h-6 text-orange-500" />
+                  </div>
+                </div>
+              </div>
+
+              {/* After State */}
+              <div className="bg-gradient-to-br from-green-900/20 to-gray-800/40 rounded-2xl border border-green-500/20 overflow-hidden">
+                <div className="relative">
+                  <img 
+                    src="https://images.pexels.com/photos/7516364/pexels-photo-7516364.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" 
+                    alt="Person being productive and focused" 
+                    className="w-full h-64 object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
+                  <h3 className="absolute bottom-4 left-0 right-0 text-2xl font-bold text-green-300 text-center">After PowerTalk</h3>
+                </div>
+                <div className="p-6">
+                  <ul className="space-y-3 text-gray-300">
+                    <li className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
+                      <span>Taking massive action daily</span>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
+                      <span>Unshakeable self-confidence</span>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
+                      <span>Unstoppable motivation</span>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
+                      <span>Laser-sharp focus</span>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
+                      <span>Dreams becoming reality</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Call to Action */}
+            <div className="text-center mt-12">
+              <p className="text-2xl font-bold mb-6 bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent">
+                Ready to transform your life?
+              </p>
+              <button 
+                onClick={handleOpenQuiz}
+                className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 px-10 py-4 rounded-full font-bold text-lg transition-all duration-300 flex items-center gap-3 mx-auto shadow-xl hover:shadow-orange-500/30 transform hover:scale-105"
+              >
+                Start Your Transformation <ArrowRight className="w-5 h-5" />
+              </button>
+              <p className="text-sm text-gray-400 font-medium mt-3">No signup required</p>
+            </div>
           </div>
         </section>
 
@@ -651,7 +800,10 @@ function App() {
               Join the ranks of achievers who turned their dreams into reality
               with PowerTalk.
             </p>
-            <button className="bg-orange-500 hover:bg-orange-600 px-8 py-4 rounded-full font-semibold text-lg transition-all">
+            <button 
+              onClick={handleOpenQuiz}
+              className="bg-orange-500 hover:bg-orange-600 px-8 py-4 rounded-full font-semibold text-lg transition-all"
+            >
               Achieve Your Dreams and Goals
             </button>
           </div>
