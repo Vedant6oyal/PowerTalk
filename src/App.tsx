@@ -14,12 +14,16 @@ import {
   X,
 } from "lucide-react";
 import OnboardingQuiz from "./OnboardingQuiz";
+import PaymentPage from "./PaymentPage";
 
 function App() {
   // State for dynamic goals text
   const [currentGoalIndex, setCurrentGoalIndex] = useState(0);
-  const [animationClass, setAnimationClass] = useState('');
+  const [animationClass, setAnimationClass] = useState("");
   const [showQuiz, setShowQuiz] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
+  const [userData, setUserData] = useState(null);
+
   const goals = [
     "Ace My Exams",
     "Achieve My Dream Body",
@@ -28,25 +32,25 @@ function App() {
     "Start My Own Business",
     "Master New Skills",
     "Overcome My Fears",
-    "Build Lasting Confidence"
+    "Build Lasting Confidence",
   ];
 
   // Effect to rotate through goals with slide animation
   useEffect(() => {
     const interval = setInterval(() => {
       // Add slide-out animation
-      setAnimationClass('slide-out');
-      
+      setAnimationClass("slide-out");
+
       setTimeout(() => {
         // Change text
         setCurrentGoalIndex((prevIndex) => (prevIndex + 1) % goals.length);
-        
+
         // Add slide-in animation
-        setAnimationClass('slide-in');
-        
+        setAnimationClass("slide-in");
+
         // Remove slide-in class after animation completes
         setTimeout(() => {
-          setAnimationClass('');
+          setAnimationClass("");
         }, 500);
       }, 250);
     }, 2000);
@@ -57,29 +61,62 @@ function App() {
   // Handle opening the quiz
   const handleOpenQuiz = () => {
     setShowQuiz(true);
+    setShowPayment(false);
     // Prevent scrolling when quiz is open
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
   };
 
   // Handle closing the quiz
   const handleCloseQuiz = () => {
     setShowQuiz(false);
     // Re-enable scrolling
-    document.body.style.overflow = 'auto';
+    document.body.style.overflow = "auto";
   };
+
+  // Handle quiz completion and show payment page
+  const handleQuizComplete = (quizData: any) => {
+    setUserData(quizData);
+    setShowQuiz(false);
+    setShowPayment(true);
+    // Keep scrolling disabled for payment page
+  };
+
+  // Handle closing payment page
+  const handleClosePayment = () => {
+    setShowPayment(false);
+    setUserData(null);
+    // Re-enable scrolling
+    document.body.style.overflow = "auto";
+  };
+
+  // If payment page is showing, render it
+  if (showPayment && userData) {
+    return (
+      <div className="relative">
+        <button
+          onClick={handleClosePayment}
+          className="fixed top-6 right-6 z-50 bg-gray-800 hover:bg-gray-700 p-2 rounded-full transition-all"
+          aria-label="Close payment page"
+        >
+          <X className="w-6 h-6 text-white" />
+        </button>
+        <PaymentPage userData={userData} />
+      </div>
+    );
+  }
 
   // If quiz is showing, render it as a modal overlay
   if (showQuiz) {
     return (
       <div className="relative">
-        <button 
+        <button
           onClick={handleCloseQuiz}
           className="fixed top-6 right-6 z-50 bg-gray-800 hover:bg-gray-700 p-2 rounded-full transition-all"
           aria-label="Close quiz"
         >
           <X className="w-6 h-6 text-white" />
         </button>
-        <OnboardingQuiz />
+        <OnboardingQuiz onComplete={handleQuizComplete} />
       </div>
     );
   }
@@ -92,7 +129,7 @@ function App() {
           <Flame className="w-8 h-8 text-orange-500" />
           <span className="text-2xl font-bold">PowerTalk</span>
         </div>
-        <button 
+        <button
           onClick={handleOpenQuiz}
           className="bg-orange-500 hover:bg-orange-600 px-6 py-2 rounded-full font-semibold transition-all"
         >
@@ -113,7 +150,7 @@ function App() {
             supercharge your productivity, silence procrastination, and finally
             turn your dreams into reality.
           </p>
-          <button 
+          <button
             onClick={handleOpenQuiz}
             className="bg-orange-500 hover:bg-orange-600 px-8 py-4 rounded-full font-semibold text-lg transition-all flex items-center gap-2 mx-auto"
           >
@@ -127,20 +164,34 @@ function App() {
           <div className="absolute top-[20%] left-[10%] w-[60px] h-[60px] rounded-full bg-gradient-to-r from-orange-500/20 to-orange-600/20 animate-float"></div>
           <div className="absolute top-[60%] right-[15%] w-[40px] h-[40px] rounded-full bg-gradient-to-r from-orange-500/20 to-orange-600/20 animate-float delay-1000"></div>
           <div className="absolute top-[80%] left-[20%] w-[30px] h-[30px] rounded-full bg-gradient-to-r from-orange-500/20 to-orange-600/20 animate-float delay-2000"></div>
-          
+
           <div className="max-w-4xl mx-auto relative z-10">
             <h2 className="text-4xl md:text-6xl font-bold mb-10 flex flex-col md:flex-row items-center justify-center">
-              <span className="bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent md:mr-3">I Want To </span>
+              <span className="bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent md:mr-3">
+                I Want To{" "}
+              </span>
               <span className="dynamic-text w-full md:min-w-[300px] lg:min-w-[400px] text-center md:text-left relative overflow-hidden mt-2 md:mt-0">
-                <span className={`${animationClass === 'slide-in' ? 'animate-slideIn' : animationClass === 'slide-out' ? 'animate-slideOut' : ''} inline-block`}>
+                <span
+                  className={`${
+                    animationClass === "slide-in"
+                      ? "animate-slideIn"
+                      : animationClass === "slide-out"
+                      ? "animate-slideOut"
+                      : ""
+                  } inline-block`}
+                >
                   {goals[currentGoalIndex]}
                 </span>
               </span>
             </h2>
             <p className="text-xl text-gray-300 mb-8 mt-8 md:mt-12 max-w-2xl mx-auto px-4">
-            No matter your ambition, PowerTalk fuels your journey.
-Get powerful motivational speeches and personalized pep talks tailored to your goals—designed to ignite action and keep you going.
-Join thousands who’ve already transformed their lives with PowerTalk. Your breakthrough starts now.            </p>
+              No matter your ambition, PowerTalk fuels your journey.
+              Get powerful motivational speeches and personalized pep talks
+              tailored to your goals—designed to ignite action and keep you
+              going.
+              Join thousands who’ve already transformed their lives with
+              PowerTalk. Your breakthrough starts now.
+            </p>
           </div>
         </section>
 
@@ -250,7 +301,7 @@ Join thousands who’ve already transformed their lives with PowerTalk. Your bre
           </div>
 
           <div className="mt-16 text-center">
-            <button 
+            <button
               onClick={handleOpenQuiz}
               className="bg-orange-500 hover:bg-orange-600 px-10 py-5 rounded-full font-semibold text-xl transition-all flex items-center gap-3 mx-auto"
             >
@@ -559,7 +610,7 @@ Join thousands who’ve already transformed their lives with PowerTalk. Your bre
           </div>
 
           <div className="mt-16 text-center">
-            <button 
+            <button
               onClick={handleOpenQuiz}
               className="bg-orange-500 hover:bg-orange-600 px-8 py-4 rounded-full font-semibold text-lg transition-all flex items-center gap-2 mx-auto"
             >
@@ -674,7 +725,8 @@ Join thousands who’ve already transformed their lives with PowerTalk. Your bre
           <div className="text-center mb-16">
             <h2 className="text-5xl font-bold mb-6">Your Transformation Journey</h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              See how PowerTalk transforms your mindset and unlocks your true potential
+              See how PowerTalk transforms your mindset and unlocks your true
+              potential
             </p>
           </div>
 
@@ -683,13 +735,15 @@ Join thousands who’ve already transformed their lives with PowerTalk. Your bre
               {/* Before State */}
               <div className="bg-gradient-to-br from-red-900/20 to-gray-800/40 rounded-2xl border border-red-500/20 overflow-hidden">
                 <div className="relative">
-                  <img 
-                    src="https://images.pexels.com/photos/7516363/pexels-photo-7516363.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" 
-                    alt="Person struggling with procrastination" 
+                  <img
+                    src="https://images.pexels.com/photos/7516363/pexels-photo-7516363.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                    alt="Person struggling with procrastination"
                     className="w-full h-64 object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
-                  <h3 className="absolute bottom-4 left-0 right-0 text-2xl font-bold text-red-300 text-center">Before PowerTalk</h3>
+                  <h3 className="absolute bottom-4 left-0 right-0 text-2xl font-bold text-red-300 text-center">
+                    Before PowerTalk
+                  </h3>
                 </div>
                 <div className="p-6">
                   <ul className="space-y-3 text-gray-300">
@@ -724,7 +778,9 @@ Join thousands who’ve already transformed their lives with PowerTalk. Your bre
                   <div className="w-20 h-20 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-6">
                     <Flame className="w-10 h-10 text-white" />
                   </div>
-                  <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent">PowerTalk Magic</h3>
+                  <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent">
+                    PowerTalk Magic
+                  </h3>
                   <div className="text-6xl mb-4">✨</div>
                   <p className="text-gray-300 font-semibold">
                     Personalized motivation that ignites your inner fire
@@ -740,13 +796,15 @@ Join thousands who’ve already transformed their lives with PowerTalk. Your bre
               {/* After State */}
               <div className="bg-gradient-to-br from-green-900/20 to-gray-800/40 rounded-2xl border border-green-500/20 overflow-hidden">
                 <div className="relative">
-                  <img 
-                    src="https://images.pexels.com/photos/7516364/pexels-photo-7516364.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" 
-                    alt="Person being productive and focused" 
+                  <img
+                    src="https://images.pexels.com/photos/7516364/pexels-photo-7516364.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                    alt="Person being productive and focused"
                     className="w-full h-64 object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
-                  <h3 className="absolute bottom-4 left-0 right-0 text-2xl font-bold text-green-300 text-center">After PowerTalk</h3>
+                  <h3 className="absolute bottom-4 left-0 right-0 text-2xl font-bold text-green-300 text-center">
+                    After PowerTalk
+                  </h3>
                 </div>
                 <div className="p-6">
                   <ul className="space-y-3 text-gray-300">
@@ -780,13 +838,15 @@ Join thousands who’ve already transformed their lives with PowerTalk. Your bre
               <p className="text-2xl font-bold mb-6 bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent">
                 Ready to transform your life?
               </p>
-              <button 
+              <button
                 onClick={handleOpenQuiz}
                 className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 px-10 py-4 rounded-full font-bold text-lg transition-all duration-300 flex items-center gap-3 mx-auto shadow-xl hover:shadow-orange-500/30 transform hover:scale-105"
               >
                 Start Your Transformation <ArrowRight className="w-5 h-5" />
               </button>
-              <p className="text-sm text-gray-400 font-medium mt-3">No signup required</p>
+              <p className="text-sm text-gray-400 font-medium mt-3">
+                No signup required
+              </p>
             </div>
           </div>
         </section>
@@ -800,7 +860,7 @@ Join thousands who’ve already transformed their lives with PowerTalk. Your bre
               Join the ranks of achievers who turned their dreams into reality
               with PowerTalk.
             </p>
-            <button 
+            <button
               onClick={handleOpenQuiz}
               className="bg-orange-500 hover:bg-orange-600 px-8 py-4 rounded-full font-semibold text-lg transition-all"
             >

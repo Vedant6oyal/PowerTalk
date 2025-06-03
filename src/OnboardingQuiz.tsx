@@ -4,32 +4,28 @@ import { ChevronRight, ChevronLeft, Target, Heart, Zap, User, Calendar, Trophy }
 interface QuizData {
   name: string;
   age: string;
+  gender: string;
   goal: string;
-  goalCategory: string;
   motivation: string;
   obstacles: string[];
-  timeframe: string;
-  previousAttempts: string;
-  personalityType: string;
-  preferredTone: string;
 }
 
-const OnboardingQuiz: React.FC = () => {
+interface OnboardingQuizProps {
+  onComplete: (data: QuizData) => void;
+}
+
+const OnboardingQuiz: React.FC<OnboardingQuizProps> = ({ onComplete }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [quizData, setQuizData] = useState<QuizData>({
     name: '',
     age: '',
+    gender: '',
     goal: '',
-    goalCategory: '',
     motivation: '',
-    obstacles: [],
-    timeframe: '',
-    previousAttempts: '',
-    personalityType: '',
-    preferredTone: ''
+    obstacles: []
   });
 
-  const totalSteps = 9;
+  const totalSteps = 6;
 
   const handleNext = () => {
     if (currentStep < totalSteps - 1) {
@@ -50,6 +46,15 @@ const OnboardingQuiz: React.FC = () => {
     }));
   };
 
+  // Auto-progress for single choice questions
+  const handleSingleChoiceChange = (field: keyof QuizData, value: string) => {
+    handleInputChange(field, value);
+    // Auto-progress after a short delay for better UX
+    setTimeout(() => {
+      handleNext();
+    }, 500);
+  };
+
   const handleObstacleToggle = (obstacle: string) => {
     const currentObstacles = quizData.obstacles;
     if (currentObstacles.includes(obstacle)) {
@@ -61,8 +66,8 @@ const OnboardingQuiz: React.FC = () => {
 
   const handleSubmit = () => {
     console.log('Quiz Data:', quizData);
-    // Here you would typically send the data to your backend
-    alert('Quiz completed! Your personalized pep talk is being generated...');
+    // Call the completion callback with the quiz data
+    onComplete(quizData);
   };
 
   const renderStep = () => {
@@ -93,11 +98,11 @@ const OnboardingQuiz: React.FC = () => {
             </div>
             <h2 className="text-3xl font-bold">How old are you?</h2>
             <p className="text-gray-300">This helps us tailor the motivation style</p>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
               {['Under 18', '18-25', '26-35', '36-45', '46-55', '55+'].map((ageRange) => (
                 <button
                   key={ageRange}
-                  onClick={() => handleInputChange('age', ageRange)}
+                  onClick={() => handleSingleChoiceChange('age', ageRange)}
                   className={`p-4 rounded-xl border-2 transition-all ${
                     quizData.age === ageRange
                       ? 'border-orange-500 bg-orange-500/20 text-orange-300'
@@ -115,6 +120,32 @@ const OnboardingQuiz: React.FC = () => {
         return (
           <div className="text-center space-y-6">
             <div className="w-20 h-20 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto">
+              <User className="w-10 h-10 text-white" />
+            </div>
+            <h2 className="text-3xl font-bold">What's your gender?</h2>
+            <p className="text-gray-300">This helps us personalize your experience</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
+              {['Male', 'Female', 'Prefer not to say'].map((gender) => (
+                <button
+                  key={gender}
+                  onClick={() => handleSingleChoiceChange('gender', gender)}
+                  className={`p-4 rounded-xl border-2 transition-all ${
+                    quizData.gender === gender
+                      ? 'border-orange-500 bg-orange-500/20 text-orange-300'
+                      : 'border-gray-600 bg-gray-800 text-gray-300 hover:border-orange-400'
+                  }`}
+                >
+                  {gender}
+                </button>
+              ))}
+            </div>
+          </div>
+        );
+
+      case 3:
+        return (
+          <div className="text-center space-y-6">
+            <div className="w-20 h-20 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto">
               <Target className="w-10 h-10 text-white" />
             </div>
             <h2 className="text-3xl font-bold">What's Your Main Goal?</h2>
@@ -126,41 +157,6 @@ const OnboardingQuiz: React.FC = () => {
               rows={4}
               className="w-full max-w-2xl mx-auto p-4 bg-gray-800 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-orange-500 resize-none"
             />
-          </div>
-        );
-
-      case 3:
-        return (
-          <div className="text-center space-y-6">
-            <div className="w-20 h-20 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto">
-              <Trophy className="w-10 h-10 text-white" />
-            </div>
-            <h2 className="text-3xl font-bold">Goal Category</h2>
-            <p className="text-gray-300">Which category best describes your goal?</p>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-3xl mx-auto">
-              {[
-                'Health & Fitness',
-                'Career & Business',
-                'Education & Learning',
-                'Relationships',
-                'Personal Development',
-                'Financial',
-                'Creative & Hobbies',
-                'Other'
-              ].map((category) => (
-                <button
-                  key={category}
-                  onClick={() => handleInputChange('goalCategory', category)}
-                  className={`p-4 rounded-xl border-2 transition-all ${
-                    quizData.goalCategory === category
-                      ? 'border-orange-500 bg-orange-500/20 text-orange-300'
-                      : 'border-gray-600 bg-gray-800 text-gray-300 hover:border-orange-400'
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
           </div>
         );
 
@@ -221,100 +217,6 @@ const OnboardingQuiz: React.FC = () => {
           </div>
         );
 
-      case 6:
-        return (
-          <div className="text-center space-y-6">
-            <div className="w-20 h-20 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto">
-              <Calendar className="w-10 h-10 text-white" />
-            </div>
-            <h2 className="text-3xl font-bold">Timeline</h2>
-            <p className="text-gray-300">When do you want to achieve this goal?</p>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
-              {[
-                '1 month',
-                '3 months',
-                '6 months',
-                '1 year',
-                '2+ years',
-                'No specific timeline'
-              ].map((timeframe) => (
-                <button
-                  key={timeframe}
-                  onClick={() => handleInputChange('timeframe', timeframe)}
-                  className={`p-4 rounded-xl border-2 transition-all ${
-                    quizData.timeframe === timeframe
-                      ? 'border-orange-500 bg-orange-500/20 text-orange-300'
-                      : 'border-gray-600 bg-gray-800 text-gray-300 hover:border-orange-400'
-                  }`}
-                >
-                  {timeframe}
-                </button>
-              ))}
-            </div>
-          </div>
-        );
-
-      case 7:
-        return (
-          <div className="text-center space-y-6">
-            <div className="w-20 h-20 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto">
-              <Target className="w-10 h-10 text-white" />
-            </div>
-            <h2 className="text-3xl font-bold">Previous Attempts</h2>
-            <p className="text-gray-300">Have you tried to achieve this goal before?</p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto">
-              {[
-                'First time trying',
-                'Tried once before',
-                'Multiple attempts'
-              ].map((attempt) => (
-                <button
-                  key={attempt}
-                  onClick={() => handleInputChange('previousAttempts', attempt)}
-                  className={`p-4 rounded-xl border-2 transition-all ${
-                    quizData.previousAttempts === attempt
-                      ? 'border-orange-500 bg-orange-500/20 text-orange-300'
-                      : 'border-gray-600 bg-gray-800 text-gray-300 hover:border-orange-400'
-                  }`}
-                >
-                  {attempt}
-                </button>
-              ))}
-            </div>
-          </div>
-        );
-
-      case 8:
-        return (
-          <div className="text-center space-y-6">
-            <div className="w-20 h-20 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto">
-              <Zap className="w-10 h-10 text-white" />
-            </div>
-            <h2 className="text-3xl font-bold">Motivation Style</h2>
-            <p className="text-gray-300">What type of motivation works best for you?</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto">
-              {[
-                'Gentle & Encouraging',
-                'Direct & Tough Love',
-                'Inspiring & Uplifting',
-                'Logical & Strategic'
-              ].map((tone) => (
-                <button
-                  key={tone}
-                  onClick={() => handleInputChange('preferredTone', tone)}
-                  className={`p-4 rounded-xl border-2 transition-all ${
-                    quizData.preferredTone === tone
-                      ? 'border-orange-500 bg-orange-500/20 text-orange-300'
-                      : 'border-gray-600 bg-gray-800 text-gray-300 hover:border-orange-400'
-                  }`}
-                >
-                  {tone}
-                </button>
-              ))}
-            </div>
-          </div>
-        );
-
       default:
         return null;
     }
@@ -324,15 +226,20 @@ const OnboardingQuiz: React.FC = () => {
     switch (currentStep) {
       case 0: return quizData.name.trim() !== '';
       case 1: return quizData.age !== '';
-      case 2: return quizData.goal.trim() !== '';
-      case 3: return quizData.goalCategory !== '';
+      case 2: return quizData.gender !== '';
+      case 3: return quizData.goal.trim() !== '';
       case 4: return quizData.motivation.trim() !== '';
       case 5: return quizData.obstacles.length > 0;
-      case 6: return quizData.timeframe !== '';
-      case 7: return quizData.previousAttempts !== '';
-      case 8: return quizData.preferredTone !== '';
       default: return false;
     }
+  };
+
+  const isMultipleChoiceStep = () => {
+    return currentStep === 5; // Only obstacles step allows multiple selections
+  };
+
+  const isSingleChoiceStep = () => {
+    return currentStep === 1 || currentStep === 2; // Age and gender steps
   };
 
   return (
@@ -358,49 +265,51 @@ const OnboardingQuiz: React.FC = () => {
             {renderStep()}
           </div>
 
-          {/* Navigation */}
-          <div className="flex justify-between items-center mt-8">
-            <button
-              onClick={handlePrevious}
-              disabled={currentStep === 0}
-              className={`flex items-center gap-2 px-6 py-3 rounded-full font-semibold transition-all ${
-                currentStep === 0
-                  ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
-                  : 'bg-gray-700 hover:bg-gray-600 text-white'
-              }`}
-            >
-              <ChevronLeft className="w-5 h-5" />
-              Previous
-            </button>
-
-            {currentStep === totalSteps - 1 ? (
+          {/* Navigation - Only show for text input and multiple choice steps */}
+          {!isSingleChoiceStep() && (
+            <div className="flex justify-between items-center mt-8">
               <button
-                onClick={handleSubmit}
-                disabled={!isStepComplete()}
-                className={`flex items-center gap-2 px-8 py-3 rounded-full font-semibold transition-all ${
-                  isStepComplete()
-                    ? 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white'
-                    : 'bg-gray-700 text-gray-500 cursor-not-allowed'
-                }`}
-              >
-                Generate My Pep Talk
-                <Zap className="w-5 h-5" />
-              </button>
-            ) : (
-              <button
-                onClick={handleNext}
-                disabled={!isStepComplete()}
+                onClick={handlePrevious}
+                disabled={currentStep === 0}
                 className={`flex items-center gap-2 px-6 py-3 rounded-full font-semibold transition-all ${
-                  isStepComplete()
-                    ? 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white'
-                    : 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                  currentStep === 0
+                    ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                    : 'bg-gray-700 hover:bg-gray-600 text-white'
                 }`}
               >
-                Next
-                <ChevronRight className="w-5 h-5" />
+                <ChevronLeft className="w-5 h-5" />
+                Previous
               </button>
-            )}
-          </div>
+
+              {currentStep === totalSteps - 1 ? (
+                <button
+                  onClick={handleSubmit}
+                  disabled={!isStepComplete()}
+                  className={`flex items-center gap-2 px-8 py-3 rounded-full font-semibold transition-all ${
+                    isStepComplete()
+                      ? 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white'
+                      : 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                  }`}
+                >
+                  Generate My Pep Talk
+                  <Zap className="w-5 h-5" />
+                </button>
+              ) : (
+                <button
+                  onClick={handleNext}
+                  disabled={!isStepComplete()}
+                  className={`flex items-center gap-2 px-6 py-3 rounded-full font-semibold transition-all ${
+                    isStepComplete()
+                      ? 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white'
+                      : 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                  }`}
+                >
+                  Next
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
