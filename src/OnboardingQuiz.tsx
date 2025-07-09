@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronRight, ChevronLeft, Target, Heart, Zap, User, Calendar, Trophy } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Target, Heart, Zap, User, Calendar, Trophy, Mail } from 'lucide-react';
 
 interface QuizData {
   name: string;
@@ -7,12 +7,17 @@ interface QuizData {
   gender: string;
   goal: string;
   motivation: string;
-  obstacles: string[];
+  email: string;
 }
 
 interface OnboardingQuizProps {
   onComplete: (data: QuizData) => void;
 }
+
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbywnDWXrCwzqHzTZJsUTgjxCDIsZb0aCwT1WlN5punEK9rWLtGMwD5rCM8oV-tsrsvx/exec';
+
+// Email validation regex
+const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 const OnboardingQuiz: React.FC<OnboardingQuizProps> = ({ onComplete }) => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -22,7 +27,7 @@ const OnboardingQuiz: React.FC<OnboardingQuizProps> = ({ onComplete }) => {
     gender: '',
     goal: '',
     motivation: '',
-    obstacles: []
+    email: ''
   });
 
   const totalSteps = 6;
@@ -55,19 +60,54 @@ const OnboardingQuiz: React.FC<OnboardingQuizProps> = ({ onComplete }) => {
     }, 500);
   };
 
-  const handleObstacleToggle = (obstacle: string) => {
-    const currentObstacles = quizData.obstacles;
-    if (currentObstacles.includes(obstacle)) {
-      handleInputChange('obstacles', currentObstacles.filter(o => o !== obstacle));
-    } else {
-      handleInputChange('obstacles', [...currentObstacles, obstacle]);
+  const saveToGoogleSheets = async (data: QuizData) => {
+    try {
+      const payload = {
+        ...data,
+        sessionId: Date.now().toString(),
+        completedAt: new Date().toISOString()
+      };
+
+      // Using 'no-cors' mode to bypass browser CORS policy for Google Scripts.
+      // This sends the data but doesn't allow reading the response.
+      await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+      });
+
+      // We can't confirm success from the response, but if fetch didn't throw,
+      // the request was sent.
+      console.log('✅ Data submission request sent to Google Sheets.');
+      return true;
+
+    } catch (error) {
+      console.error('❌ Error saving to Google Sheets:', error);
+      return false;
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log('Quiz Data:', quizData);
+    
+    // Save to Google Sheets first
+    const saved = await saveToGoogleSheets(quizData);
+    
+    if (saved) {
+      console.log('✅ Quiz data saved to Google Sheets');
+    } else {
+      console.log('⚠️ Quiz data not saved to Google Sheets, but continuing...');
+    }
+    
     // Call the completion callback with the quiz data
     onComplete(quizData);
+  };
+
+  const isValidEmail = (email: string): boolean => {
+    return EMAIL_REGEX.test(email.trim());
   };
 
   const renderStep = () => {
@@ -182,38 +222,29 @@ const OnboardingQuiz: React.FC<OnboardingQuizProps> = ({ onComplete }) => {
         return (
           <div className="text-center space-y-6">
             <div className="w-20 h-20 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto">
-              <Zap className="w-10 h-10 text-white" />
+              <Mail className="w-10 h-10 text-white" />
             </div>
-            <h2 className="text-3xl font-bold">What Holds You Back?</h2>
-            <p className="text-gray-300">Select all obstacles that typically challenge you</p>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
-              {[
-                'Procrastination',
-                'Self-doubt',
-                'Lack of time',
-                'Lack of motivation',
-                'Fear of failure',
-                'Perfectionism',
-                'Distractions',
-                'Lack of support',
-                'Past failures',
-                'Overwhelm',
-                'Comparison to others',
-                'Lack of confidence'
-              ].map((obstacle) => (
-                <button
-                  key={obstacle}
-                  onClick={() => handleObstacleToggle(obstacle)}
-                  className={`p-3 rounded-xl border-2 transition-all text-sm ${
-                    quizData.obstacles.includes(obstacle)
-                      ? 'border-orange-500 bg-orange-500/20 text-orange-300'
-                      : 'border-gray-600 bg-gray-800 text-gray-300 hover:border-orange-400'
-                  }`}
-                >
-                  {obstacle}
-                </button>
-              ))}
+            <h2 className="text-3xl font-bold">Where Should We Send Your Pep Talk?</h2>
+            <p className="text-gray-300">Enter your email address to receive your personalized audio</p>
+            <div className="space-y-2">
+              <input
+                type="email"
+                placeholder="Enter your email"
+                value={quizData.email}
+                onChange={(e) => handleInputChange('email', e.target.value)}
+                className={`w-full max-w-md mx-auto p-4 bg-gray-800 border rounded-xl text-white placeholder-gray-400 focus:outline-none transition-colors ${
+                  quizData.email && !isValidEmail(quizData.email)
+                    ? 'border-red-500 focus:border-red-500'
+                    : 'border-gray-600 focus:border-orange-500'
+                }`}
+              />
+              {quizData.email && !isValidEmail(quizData.email) && (
+                <p className="text-red-500 text-sm">Please enter a valid email address</p>
+              )}
             </div>
+            <p className="text-gray-400 text-sm">
+              🎧 Your personalized pep talk audio will be delivered directly to your inbox
+            </p>
           </div>
         );
 
@@ -229,13 +260,13 @@ const OnboardingQuiz: React.FC<OnboardingQuizProps> = ({ onComplete }) => {
       case 2: return quizData.gender !== '';
       case 3: return quizData.goal.trim() !== '';
       case 4: return quizData.motivation.trim() !== '';
-      case 5: return quizData.obstacles.length > 0;
+      case 5: return quizData.email.trim() !== '' && isValidEmail(quizData.email);
       default: return false;
     }
   };
 
   const isMultipleChoiceStep = () => {
-    return currentStep === 5; // Only obstacles step allows multiple selections
+    return false; // No multiple choice steps anymore
   };
 
   const isSingleChoiceStep = () => {

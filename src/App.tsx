@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import {
   Flame,
   Target,
@@ -15,20 +16,27 @@ import {
 } from "lucide-react";
 import OnboardingQuiz from "./OnboardingQuiz";
 import PaymentPage from "./PaymentPage";
+import InfluencerAffiliate from "./InfluencerAffiliate";
 
-function App() {
+// Landing Page Component
+function LandingPage() {
+  const navigate = useNavigate();
+  
   // State for dynamic goals text
   const [currentGoalIndex, setCurrentGoalIndex] = useState(0);
   const [animationClass, setAnimationClass] = useState("");
-  const [showQuiz, setShowQuiz] = useState(false);
-  const [showPayment, setShowPayment] = useState(false);
-  const [userData, setUserData] = useState(null);
+
+  // State for audio playback
+  const [isPlayingDiscipline, setIsPlayingDiscipline] = useState(false);
+  const [isPlayingFocus, setIsPlayingFocus] = useState(false);
+  const [disciplineAudio, setDisciplineAudio] = useState<HTMLAudioElement | null>(null);
+  const [focusAudio, setFocusAudio] = useState<HTMLAudioElement | null>(null);
 
   const goals = [
     "Ace My Exams",
     "Achieve My Dream Body",
     "Erase My Self-Doubt",
-    "Retire My Parents",
+    "Get Admission in Top University",
     "Start My Own Business",
     "Master New Skills",
     "Overcome My Fears",
@@ -58,68 +66,78 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
+  // Initialize audio elements
+  useEffect(() => {
+    const disciplineAudioElement = new Audio('/audio/Motivational_stay_hard.mp3');
+    const focusAudioElement = new Audio('/audio/New_Motivation.mp3');
+    
+    setDisciplineAudio(disciplineAudioElement);
+    setFocusAudio(focusAudioElement);
+
+    // Add event listeners for when audio ends
+    disciplineAudioElement.addEventListener('ended', () => {
+      setIsPlayingDiscipline(false);
+    });
+
+    focusAudioElement.addEventListener('ended', () => {
+      setIsPlayingFocus(false);
+    });
+
+    // Cleanup
+    return () => {
+      disciplineAudioElement.pause();
+      focusAudioElement.pause();
+      disciplineAudioElement.removeEventListener('ended', () => {
+        setIsPlayingDiscipline(false);
+      });
+      focusAudioElement.removeEventListener('ended', () => {
+        setIsPlayingFocus(false);
+      });
+    };
+  }, []);
+
   // Handle opening the quiz
   const handleOpenQuiz = () => {
-    setShowQuiz(true);
-    setShowPayment(false);
-    // Prevent scrolling when quiz is open
-    document.body.style.overflow = "hidden";
+    navigate('/quiz');
   };
 
-  // Handle closing the quiz
-  const handleCloseQuiz = () => {
-    setShowQuiz(false);
-    // Re-enable scrolling
-    document.body.style.overflow = "auto";
+  // Handle discipline audio play/pause
+  const handleDisciplinePlay = () => {
+    if (!disciplineAudio) return;
+
+    if (isPlayingDiscipline) {
+      disciplineAudio.pause();
+      setIsPlayingDiscipline(false);
+    } else {
+      // Pause focus audio if playing
+      if (focusAudio && isPlayingFocus) {
+        focusAudio.pause();
+        setIsPlayingFocus(false);
+      }
+      
+      disciplineAudio.play();
+      setIsPlayingDiscipline(true);
+    }
   };
 
-  // Handle quiz completion and show payment page
-  const handleQuizComplete = (quizData: any) => {
-    setUserData(quizData);
-    setShowQuiz(false);
-    setShowPayment(true);
-    // Keep scrolling disabled for payment page
+  // Handle focus audio play/pause
+  const handleFocusPlay = () => {
+    if (!focusAudio) return;
+
+    if (isPlayingFocus) {
+      focusAudio.pause();
+      setIsPlayingFocus(false);
+    } else {
+      // Pause discipline audio if playing
+      if (disciplineAudio && isPlayingDiscipline) {
+        disciplineAudio.pause();
+        setIsPlayingDiscipline(false);
+      }
+      
+      focusAudio.play();
+      setIsPlayingFocus(true);
+    }
   };
-
-  // Handle closing payment page
-  const handleClosePayment = () => {
-    setShowPayment(false);
-    setUserData(null);
-    // Re-enable scrolling
-    document.body.style.overflow = "auto";
-  };
-
-  // If payment page is showing, render it
-  if (showPayment && userData) {
-    return (
-      <div className="relative">
-        <button
-          onClick={handleClosePayment}
-          className="fixed top-6 right-6 z-50 bg-gray-800 hover:bg-gray-700 p-2 rounded-full transition-all"
-          aria-label="Close payment page"
-        >
-          <X className="w-6 h-6 text-white" />
-        </button>
-        <PaymentPage userData={userData} />
-      </div>
-    );
-  }
-
-  // If quiz is showing, render it as a modal overlay
-  if (showQuiz) {
-    return (
-      <div className="relative">
-        <button
-          onClick={handleCloseQuiz}
-          className="fixed top-6 right-6 z-50 bg-gray-800 hover:bg-gray-700 p-2 rounded-full transition-all"
-          aria-label="Close quiz"
-        >
-          <X className="w-6 h-6 text-white" />
-        </button>
-        <OnboardingQuiz onComplete={handleQuizComplete} />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
@@ -131,7 +149,7 @@ function App() {
         </div>
         <button
           onClick={handleOpenQuiz}
-          className="bg-orange-500 hover:bg-orange-600 px-6 py-2 rounded-full font-semibold transition-all"
+          className="bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded-full font-semibold transition-all"
         >
           Ignite Your Journey
         </button>
@@ -199,11 +217,7 @@ function App() {
         <section className="container mx-auto px-6 py-24">
           <div className="text-center mb-16">
             <h2 className="text-5xl font-bold mb-6">Life-Changing Benefits</h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              PowerTalk isn't just another app. It's a transformation catalyst
-              that delivers real, measurable changes to your life, work, and
-              wellbeing.
-            </p>
+          
           </div>
 
           <div className="grid lg:grid-cols-3 gap-12">
@@ -336,12 +350,7 @@ function App() {
                   <h3 className="text-3xl font-bold mb-6">
                     When Motivation Fades, Discipline Prevails
                   </h3>
-                  <p className="text-gray-300 text-lg mb-8">
-                    We all face those moments when initial excitement wanes and
-                    the daily grind feels overwhelming. PowerTalk's
-                    discipline-focused pep talks help you push through these
-                    valleys by:
-                  </p>
+                  
                   <ul className="space-y-4">
                     <li className="flex items-start">
                       <div className="bg-orange-500/20 rounded-full p-1 mt-1 mr-3">
@@ -388,20 +397,29 @@ function App() {
                   </div>
 
                   <div className="bg-gray-900/50 rounded-xl p-4 flex items-center">
-                    <button className="bg-orange-500 hover:bg-orange-600 rounded-full p-3 mr-4 transition-all flex-shrink-0">
+                    <button 
+                      onClick={handleDisciplinePlay}
+                      className={`${
+                        isPlayingDiscipline 
+                          ? 'bg-orange-600 animate-pulse' 
+                          : 'bg-orange-500 hover:bg-orange-600'
+                      } rounded-full p-3 mr-4 transition-all flex-shrink-0`}
+                    >
                       <Play className="w-6 h-6" />
                     </button>
 
                     <div className="w-full">
                       <div className="flex justify-between mb-1">
                         <span className="text-sm text-gray-400">
-                          Discipline Booster
+                          {isPlayingDiscipline ? 'Playing...' : 'Discipline Booster'}
                         </span>
                         <span className="text-sm text-gray-400">1:45</span>
                       </div>
                       <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-orange-500 rounded-full"
+                          className={`h-full ${
+                            isPlayingDiscipline ? 'bg-orange-400 animate-pulse' : 'bg-orange-500'
+                          } rounded-full transition-all`}
                           style={{ width: "30%" }}
                         ></div>
                       </div>
@@ -409,12 +427,8 @@ function App() {
                   </div>
 
                   <div className="mt-4 text-center">
-                    <audio id="discipline-audio" className="hidden">
-                      <source src="sample.mp3" type="audio/mpeg" />
-                      Your browser does not support the audio element.
-                    </audio>
                     <p className="text-sm text-gray-400">
-                      Tap play to listen to this pep talk
+                      {isPlayingDiscipline ? 'Playing motivational pep talk...' : 'Tap play to listen to this pep talk'}
                     </p>
                   </div>
                 </div>
@@ -433,11 +447,6 @@ function App() {
                   <h3 className="text-3xl font-bold mb-6">
                     Cut Through the Mental Noise
                   </h3>
-                  <p className="text-gray-300 text-lg mb-8">
-                    In a world of endless distractions, maintaining focus is
-                    harder than ever. PowerTalk's focus-enhancing messages help
-                    you recenter by:
-                  </p>
                   <ul className="space-y-4">
                     <li className="flex items-start">
                       <div className="bg-orange-500/20 rounded-full p-1 mt-1 mr-3">
@@ -481,20 +490,29 @@ function App() {
                   </div>
 
                   <div className="bg-gray-900/50 rounded-xl p-4 flex items-center">
-                    <button className="bg-orange-500 hover:bg-orange-600 rounded-full p-3 mr-4 transition-all flex-shrink-0">
+                    <button 
+                      onClick={handleFocusPlay}
+                      className={`${
+                        isPlayingFocus 
+                          ? 'bg-orange-600 animate-pulse' 
+                          : 'bg-orange-500 hover:bg-orange-600'
+                      } rounded-full p-3 mr-4 transition-all flex-shrink-0`}
+                    >
                       <Play className="w-6 h-6" />
                     </button>
 
                     <div className="w-full">
                       <div className="flex justify-between mb-1">
                         <span className="text-sm text-gray-400">
-                          Focus Restorer
+                          {isPlayingFocus ? 'Playing...' : 'Focus Restorer'}
                         </span>
                         <span className="text-sm text-gray-400">2:10</span>
                       </div>
                       <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-orange-500 rounded-full"
+                          className={`h-full ${
+                            isPlayingFocus ? 'bg-orange-400 animate-pulse' : 'bg-orange-500'
+                          } rounded-full transition-all`}
                           style={{ width: "45%" }}
                         ></div>
                       </div>
@@ -502,12 +520,8 @@ function App() {
                   </div>
 
                   <div className="mt-4 text-center">
-                    <audio id="focus-audio" className="hidden">
-                      <source src="sample.mp3" type="audio/mpeg" />
-                      Your browser does not support the audio element.
-                    </audio>
                     <p className="text-sm text-gray-400">
-                      Tap play to listen to this pep talk
+                      {isPlayingFocus ? 'Playing motivational pep talk...' : 'Tap play to listen to this pep talk'}
                     </p>
                   </div>
                 </div>
@@ -515,7 +529,7 @@ function App() {
             </div>
 
             {/* Example 3: Getting Back on Track */}
-            <div className="bg-gray-900/50 rounded-3xl p-8 md:p-12">
+            {/* <div className="bg-gray-900/50 rounded-3xl p-8 md:p-12">
               <div className="grid md:grid-cols-2 gap-10 items-center">
                 <div>
                   <div className="inline-block bg-orange-500/20 rounded-full px-4 py-2 mb-6">
@@ -596,17 +610,13 @@ function App() {
                   </div>
 
                   <div className="mt-4 text-center">
-                    <audio id="reset-audio" className="hidden">
-                      <source src="sample.mp3" type="audio/mpeg" />
-                      Your browser does not support the audio element.
-                    </audio>
                     <p className="text-sm text-gray-400">
                       Tap play to listen to this pep talk
                     </p>
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
 
           <div className="mt-16 text-center">
@@ -657,7 +667,7 @@ function App() {
                 />
                 <div>
                   <p className="font-semibold">Sarah Mitchell</p>
-                  <p className="text-sm text-gray-400">Tech Entrepreneur</p>
+                  
                 </div>
               </div>
             </div>
@@ -685,7 +695,6 @@ function App() {
                 />
                 <div>
                   <p className="font-semibold">Marcus Chen</p>
-                  <p className="text-sm text-gray-400">Professional Athlete</p>
                 </div>
               </div>
             </div>
@@ -713,7 +722,6 @@ function App() {
                 />
                 <div>
                   <p className="font-semibold">Emma Rodriguez</p>
-                  <p className="text-sm text-gray-400">Creative Director</p>
                 </div>
               </div>
             </div>
@@ -731,107 +739,7 @@ function App() {
           </div>
 
           <div className="max-w-6xl mx-auto">
-            <div className="grid md:grid-cols-3 gap-8 items-center">
-              {/* Before State */}
-              <div className="bg-gradient-to-br from-red-900/20 to-gray-800/40 rounded-2xl border border-red-500/20 overflow-hidden">
-                <div className="relative">
-                  <img
-                    src="https://images.pexels.com/photos/7516363/pexels-photo-7516363.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-                    alt="Person struggling with procrastination"
-                    className="w-full h-64 object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
-                  <h3 className="absolute bottom-4 left-0 right-0 text-2xl font-bold text-red-300 text-center">
-                    Before PowerTalk
-                  </h3>
-                </div>
-                <div className="p-6">
-                  <ul className="space-y-3 text-gray-300">
-                    <li className="flex items-center gap-3">
-                      <div className="w-2 h-2 bg-red-500 rounded-full flex-shrink-0"></div>
-                      <span>Procrastinating on important goals</span>
-                    </li>
-                    <li className="flex items-center gap-3">
-                      <div className="w-2 h-2 bg-red-500 rounded-full flex-shrink-0"></div>
-                      <span>Filled with self-doubt</span>
-                    </li>
-                    <li className="flex items-center gap-3">
-                      <div className="w-2 h-2 bg-red-500 rounded-full flex-shrink-0"></div>
-                      <span>Lacking motivation</span>
-                    </li>
-                    <li className="flex items-center gap-3">
-                      <div className="w-2 h-2 bg-red-500 rounded-full flex-shrink-0"></div>
-                      <span>Struggling with focus</span>
-                    </li>
-                    <li className="flex items-center gap-3">
-                      <div className="w-2 h-2 bg-red-500 rounded-full flex-shrink-0"></div>
-                      <span>Dreams feel impossible</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
-              {/* PowerTalk Magic */}
-              <div className="text-center p-8 relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-orange-600/20 rounded-2xl blur-xl"></div>
-                <div className="relative z-10">
-                  <div className="w-20 h-20 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <Flame className="w-10 h-10 text-white" />
-                  </div>
-                  <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent">
-                    PowerTalk Magic
-                  </h3>
-                  <div className="text-6xl mb-4">✨</div>
-                  <p className="text-gray-300 font-semibold">
-                    Personalized motivation that ignites your inner fire
-                  </p>
-                  <div className="flex items-center justify-center gap-4 mt-6">
-                    <ArrowRight className="w-6 h-6 text-orange-500" />
-                    <ArrowRight className="w-6 h-6 text-orange-500" />
-                    <ArrowRight className="w-6 h-6 text-orange-500" />
-                  </div>
-                </div>
-              </div>
-
-              {/* After State */}
-              <div className="bg-gradient-to-br from-green-900/20 to-gray-800/40 rounded-2xl border border-green-500/20 overflow-hidden">
-                <div className="relative">
-                  <img
-                    src="https://images.pexels.com/photos/7516364/pexels-photo-7516364.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-                    alt="Person being productive and focused"
-                    className="w-full h-64 object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
-                  <h3 className="absolute bottom-4 left-0 right-0 text-2xl font-bold text-green-300 text-center">
-                    After PowerTalk
-                  </h3>
-                </div>
-                <div className="p-6">
-                  <ul className="space-y-3 text-gray-300">
-                    <li className="flex items-center gap-3">
-                      <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-                      <span>Taking massive action daily</span>
-                    </li>
-                    <li className="flex items-center gap-3">
-                      <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-                      <span>Unshakeable self-confidence</span>
-                    </li>
-                    <li className="flex items-center gap-3">
-                      <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-                      <span>Unstoppable motivation</span>
-                    </li>
-                    <li className="flex items-center gap-3">
-                      <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-                      <span>Laser-sharp focus</span>
-                    </li>
-                    <li className="flex items-center gap-3">
-                      <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-                      <span>Dreams becoming reality</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
+            
 
             {/* Call to Action */}
             <div className="text-center mt-12">
@@ -851,7 +759,7 @@ function App() {
           </div>
         </section>
 
-        {/* CTA Section */}
+        {/* CTA Section
         <section className="container mx-auto px-6 py-20">
           <div className="text-center">
             <h2 className="text-4xl font-bold mb-6">Your Legacy Starts Now</h2>
@@ -867,7 +775,7 @@ function App() {
               Achieve Your Dreams and Goals
             </button>
           </div>
-        </section>
+        </section> */}
       </main>
 
       {/* Footer */}
@@ -875,6 +783,83 @@ function App() {
         <p>&copy; 2025 PowerTalk. All rights reserved.</p>
       </footer>
     </div>
+  );
+}
+
+// Quiz Page Component
+function QuizPage() {
+  const navigate = useNavigate();
+  const [userData, setUserData] = useState(null);
+
+  const handleQuizComplete = (quizData: any) => {
+    setUserData(quizData);
+    // Navigate to payment page with user data
+    navigate('/payment', { state: { userData: quizData } });
+  };
+
+  const handleCloseQuiz = () => {
+    navigate('/');
+  };
+
+  return (
+    <div className="relative">
+      <button
+        onClick={handleCloseQuiz}
+        className="fixed top-6 right-6 z-50 bg-gray-800 hover:bg-gray-700 p-2 rounded-full transition-all"
+        aria-label="Close quiz"
+      >
+        <X className="w-6 h-6 text-white" />
+      </button>
+      <OnboardingQuiz onComplete={handleQuizComplete} />
+    </div>
+  );
+}
+
+// Payment Page Component
+function PaymentPageRoute() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const userData = location.state?.userData;
+
+  // Redirect to quiz if no user data
+  useEffect(() => {
+    if (!userData) {
+      navigate('/quiz');
+    }
+  }, [userData, navigate]);
+
+  const handleClosePayment = () => {
+    navigate('/');
+  };
+
+  if (!userData) {
+    return null; // or loading spinner
+  }
+
+  return (
+    <div className="relative">
+      <button
+        onClick={handleClosePayment}
+        className="fixed top-6 right-6 z-50 bg-gray-800 hover:bg-gray-700 p-2 rounded-full transition-all"
+        aria-label="Close payment page"
+      >
+        <X className="w-6 h-6 text-white" />
+      </button>
+      <PaymentPage userData={userData} />
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/quiz" element={<QuizPage />} />
+        <Route path="/payment" element={<PaymentPageRoute />} />
+        <Route path="/affiliate" element={<InfluencerAffiliate />} />
+      </Routes>
+    </Router>
   );
 }
 
